@@ -14,14 +14,14 @@ def get_rules(tree, feature_names, class_names, ordinal_encoders=None, categoric
     total_samples = X.shape[0]
 
     def threshold_to_category(threshold, categories):
-        """Convierte un umbral numérico en la categoría correspondiente."""
+        """Convert a numerical threshold in the corresponding category."""
         for i, category in enumerate(categories):
             if threshold < i + 0.5:
                 return " OR ".join([f"{cat}" for cat in categories[:i+1]])
         return " OR ".join(categories)
 
     def map_value_to_name(name, value):
-        """Convierte un valor numérico en un nombre usando el diccionario de mapeo."""
+        """Convert a numerical theshold in a name using the dictionary mapping."""
         if categorical_mappings and name in categorical_mappings:
             mapping = categorical_mappings[name]
             return mapping.get(value, f"Unknown({value})")

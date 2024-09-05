@@ -3,31 +3,13 @@
 
 This library, using straightforward terminology, aims to make the rules for categorical variables obtained from a classification tree through Scikit-Learn easier to understand.
 
-For example, in the Titanic dataset, if we extract the textual rules provided by Scikit-Learn, we see that:
+To illustrate the results of library, I am going to use the Titanic dataset. We extract the textual rules provided by Scikit-Learn using ```export_text``` function and the following rules are observed:
 
 <p align="center">
   <img src="https://github.com/PARODBE/Rules_tree/blob/main/Scikit_rules.png" alt="Cover Page">
 </p>
 
-For the variable Sex, it specifies <= 0.5 instead of Male or Female. In this case, the variable is binary. If we now look at a continuous variable, such as Class, we can see that a rule is established for <= 1.5. In both cases, the rules provided are not very interpretable. However, if we use this library, we can see the following rules:
-
-<p align="center">
-  <img src="https://github.com/PARODBE/Rules_tree/blob/main/Rules_rules.png" alt="Cover Page">
-</p>
-
-As we can see, it starts by splitting the rules according to the variable Sex, which matches what was obtained with Scikit-Learn. Likewise, as an example, if we compare the results obtained for the variable Class, when Scikit-Learn sets the rule class <= 1.5, this could actually encompass all three classes. That's why with this library, you get First, Second, or Third instead.
-
-Similarly, we can visualize the rules obtained with Scikit-Learn using the ```plot_tree``` function:
-
-<p align="center">
-  <img src="https://github.com/PARODBE/Rules_tree/blob/main/plot_tree_scikit.png" alt="Cover Page">
-</p>
-
-And, with the proposed library:
-
-<p align="center">
-  <img src="https://github.com/PARODBE/Rules_tree/blob/main/plot_Rules.png" alt="Cover Page">
-</p>
+In the above Figure we observe as for the variable Sex, it specifies <= 0.5 instead of Male or Female. In this case, the variable is binary. If we now look at a continuous variable, such as Class, we can see that a rule is established for <= 1.5. In both cases, the rules provided are not very interpretable. This is the main reason for creating this library.
 
 Regarding the syntax for obtaining the rules, it is very simple. You only need to specify the text of the target variable as you want it to be displayed, and do the same for binary and ordinal variables:
 
@@ -68,11 +50,30 @@ rules = get_rules(clf, feature_names, ['Not Survived', 'Survived'], ordinal_enco
 for rule in rules:
     print(rule)
 ```
+And now rules are showed in the following way:
 
-To build the graph, the syntax would be:
+<p align="center">
+  <img src="https://github.com/PARODBE/Rules_tree/blob/main/Rules_rules.png" alt="Cover Page">
+</p>
+
+As we can see, it starts by splitting the rules according to the variable Sex, which matches what was obtained with Scikit-Learn. Likewise, as an example, if we compare the results obtained for the variable Class, when Scikit-Learn sets the rule class <= 1.5, this could actually encompass all three classes. That's why with this library, you get First, Second, or Third instead.
+
+Similarly, we can visualize the rules obtained with Scikit-Learn using the ```plot_tree``` function:
+
+<p align="center">
+  <img src="https://github.com/PARODBE/Rules_tree/blob/main/plot_tree_scikit.png" alt="Cover Page">
+</p>
+
+With the proposed library the code is very simple:
 
 ```python
 # Create the chart based on the generated rules
 dot = draw_combined_tree(rules)
 #dot.render('optimized_decision_tree', format='png')  # Save the graphic in PNG format
 dot
+```
+And in the following figure we can observe the proposed rules with this library:
+
+<p align="center">
+  <img src="https://github.com/PARODBE/Rules_tree/blob/main/plot_Rules.png" alt="Cover Page">
+</p>

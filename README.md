@@ -12,7 +12,7 @@ For example, in the Titanic dataset, if we extract the textual rules provided by
 For the variable Sex, it specifies <= 0.5 instead of Male or Female. In this case, the variable is binary. If we now look at a continuous variable, such as Class, we can see that a rule is established for <= 1.5. In both cases, the rules provided are not very interpretable. However, if we use this library, we can see the following rules:
 
 <p align="center">
-  <img src="https://github.com/PARODBE/Rules_tree/blob/main/Rules_rules.png" alt="Cover Page" width="100" height="100">
+  <img src="https://github.com/PARODBE/Rules_tree/blob/main/Rules_rules.png" alt="Cover Page" width="300" height="100">
 </p>
 
 As we can see, it starts by splitting the rules according to the variable Sex, which matches what was obtained with Scikit-Learn, and likewise, we can see that...

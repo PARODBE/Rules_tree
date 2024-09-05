@@ -26,5 +26,5 @@ Similarly, we can visualize the rules obtained with Scikit-Learn using the ```pl
 And, with the proposed library:
 
 <p align="center">
-  <img src="https://github.com/PARODBE/Rules_tree/blob/main/plot_Rules.png" alt="Cover Page" width='650' height='160'>
+  <img src="https://github.com/PARODBE/Rules_tree/blob/main/plot_Rules.png" alt="Cover Page" width='650' height='220'>
 </p>

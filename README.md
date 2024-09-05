@@ -11,7 +11,7 @@ To illustrate the results of library, I am going to use the Titanic dataset. We 
 
 In the above Figure we observe as for the variable Sex, it specifies <= 0.5 instead of Male or Female. In this case, the variable is binary. If we now look at a continuous variable, such as Class, we can see that a rule is established for <= 1.5. In both cases, the rules provided are not very interpretable. This is the main reason for creating this library.
 
-Regarding the syntax for obtaining the rules, it is very simple. You only need to specify the text of the target variable as you want it to be displayed, and do the same for binary and ordinal variables:
+With this library, the syntax for obtaining the rules, it is very simple. You only need to specify the text of the target variable as you want it to be displayed, and do the same for binary and ordinal variables:
 
 ```python
 

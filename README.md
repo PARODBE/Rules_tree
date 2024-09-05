@@ -28,3 +28,50 @@ And, with the proposed library:
 <p align="center">
   <img src="https://github.com/PARODBE/Rules_tree/blob/main/plot_Rules.png" alt="Cover Page">
 </p>
+
+Regarding the syntax for obtaining the rules, it is very simple. You only need to specify the text of the target variable as you want it to be displayed, and do the same for binary and ordinal variables:
+
+```python
+
+# Load data
+df = sns.load_dataset('titanic')
+
+# Select variables
+df = df[['class', 'sex', 'age', 'fare', 'survived']].dropna()
+
+# Encode ‘class’ as ordinal
+ordinal_encoder = OrdinalEncoder(categories=[['First', 'Second', 'Third']])
+df['class'] = ordinal_encoder.fit_transform(df[['class']])
+
+# Encoding ‘sex’ using Label Encoding
+label_encoder = LabelEncoder()
+df['sex'] = label_encoder.fit_transform(df['sex'])
+
+# Prepare variables and target
+X = df[['sex', 'class', 'age', 'fare']].values
+feature_names = ['sex', 'class', 'age', 'fare']
+y = df['survived']
+
+# Category mapping dictionary
+categorical_mappings = {
+    'sex': {0: 'female', 1: 'male'}
+}
+
+# Training the decision tree
+clf = DecisionTreeClassifier(max_depth=3, criterion='entropy', random_state=42)
+clf.fit(X, y)
+
+# Generate the rules from the tree
+rules = get_rules(clf, feature_names, ['Not Survived', 'Survived'], ordinal_encoders={'class': ordinal_encoder}, categorical_mappings=categorical_mappings, X=X)
+
+# Visualize the rules from the tree
+for rule in rules:
+    print(rule)
+
+To build the graph, the syntax would be:
+
+```python
+# Create the chart based on the generated rules
+dot = draw_combined_tree(rules)
+#dot.render('optimized_decision_tree', format='png')  # Save the graphic in PNG format
+dot

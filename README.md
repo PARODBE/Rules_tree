@@ -67,6 +67,7 @@ rules = get_rules(clf, feature_names, ['Not Survived', 'Survived'], ordinal_enco
 # Visualize the rules from the tree
 for rule in rules:
     print(rule)
+```
 
 To build the graph, the syntax would be:
 

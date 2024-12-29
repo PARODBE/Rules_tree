@@ -3,7 +3,6 @@ import numpy as np
 from graphviz import Digraph
 import re
 
-# Function for extracting tree rules with generic variable handling
 def get_rules(tree, feature_names, class_names, ordinal_encoders=None, categorical_mappings=None, X=None):
     tree_ = tree.tree_
     feature_name = [
@@ -14,14 +13,14 @@ def get_rules(tree, feature_names, class_names, ordinal_encoders=None, categoric
     total_samples = X.shape[0]
 
     def threshold_to_category(threshold, categories):
-        """Convert a numerical threshold in the corresponding category."""
+        """Convert a numerical threshold into the corresponding category."""
         for i, category in enumerate(categories):
             if threshold < i + 0.5:
                 return " OR ".join([f"{cat}" for cat in categories[:i+1]])
         return " OR ".join(categories)
 
     def map_value_to_name(name, value):
-        """Convert a numerical theshold in a name using the dictionary mapping."""
+        """Convert a numerical threshold into a name using the dictionary mapping."""
         if categorical_mappings and name in categorical_mappings:
             mapping = categorical_mappings[name]
             return mapping.get(value, f"Unknown({value})")
@@ -52,7 +51,7 @@ def get_rules(tree, feature_names, class_names, ordinal_encoders=None, categoric
                 path_right = path.copy()
                 path_right.append(f"({name} == '{map_value_to_name(name, 0)}')")
                 recurse(tree_.children_right[node], path_right)
-            else:  # Continue variables
+            else:  # Continuous variables
                 if np.issubdtype(type(threshold), np.number): 
                     path_left = path.copy()
                     path_left.append(f"({name} <= {threshold:.2f})")
@@ -62,19 +61,18 @@ def get_rules(tree, feature_names, class_names, ordinal_encoders=None, categoric
                     path_right.append(f"({name} > {threshold:.2f})")
                     recurse(tree_.children_right[node], path_right)
         else:
-            # Counting samples on the final leaf
-            value_counts = np.sum(tree_.value[node], axis=0)
-            total_count = np.sum(value_counts)
+            # Calculate absolute counts from proportions
+            value_counts = tree_.value[node][0] * tree_.weighted_n_node_samples[node]
+            total_count = tree_.weighted_n_node_samples[node]
             percentage = (total_count / total_samples) * 100
-            class_counts = dict(zip(class_names, value_counts))
-            class_result = class_names[np.argmax(tree_.value[node])]
+            class_counts = dict(zip(class_names, map(int, value_counts)))
+            class_result = class_names[np.argmax(value_counts)]
             count_text = ", ".join([f"{cls}: {int(count)}" for cls, count in class_counts.items()])
             path.append(f"-> Clase: {class_result} (n=[{count_text}], {percentage:.1f}%)")
             paths.append(" AND ".join(path).replace("AND ->", "->"))
 
     recurse(0, [])
     return paths
-
 
 def clean_label(label):
     """Clean up node labels by removing special characters that can cause problems in Graphviz."""
@@ -85,7 +83,7 @@ def format_condition(condition):
     return condition.replace("(", "").replace(")", "").replace("'", "")
 
 def get_color_for_level(level):
-    """Returns a specific colour for each level of the tree."""
+    """Returns a specific color for each level of the tree."""
     colors = [
         'lightblue', 'lightyellow', 'lightgray', 
          'lightcyan', 'lavender', 'lightcoral', 'lightgoldenrodyellow'
@@ -111,7 +109,7 @@ def draw_combined_tree(rules):
 
             if node_id not in node_tracker:
                 # If the node doesn't exist, we create it
-                color = get_color_for_level(i)  # Obtain colour according to level
+                color = get_color_for_level(i)  # Obtain color according to level
                 dot.node(node_id, condition, style='filled', fillcolor=color)
                 node_tracker[node_id] = node_id
                 node_levels[node_id] = i
@@ -121,7 +119,7 @@ def draw_combined_tree(rules):
                     dot.edge(prev_node, node_id)
             prev_node = node_id
 
-        # Modify the end node to show only the predominant class, numbers and percentage
+        # Modify the end node to show only the predominant class, numbers, and percentage
         match = re.search(r'Clase: ([\w\s]+) \(n=\[([^\]]+)\], (\d+\.\d+)%\)', class_result)
         if match:
             class_name = match.group(1).strip()
@@ -139,8 +137,8 @@ def draw_combined_tree(rules):
 
         class_node_id = clean_label(f"class_{final_label}")
         if class_node_id not in node_tracker:
-            # Colour the end node according to whether it starts with 'S'
-            if final_label.startswith('S'):
+            # Color the end node according to whether it starts with 'S'
+            if final_label.startswith('N'):
                 color = '#ccffcc'  # Green
             else:
                 color = '#ffcccc'  # Red
